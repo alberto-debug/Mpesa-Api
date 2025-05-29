@@ -18,6 +18,12 @@ public class RoleSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        if (roleRepository.)
+        if (roleRepository.findByName("ROLE_GUEST").isEmpty()){
+            roleRepository.save(new Role(null, "ROLE_GUEST", new HashSet<>()));
+
+            if (roleRepository.findByName("ROLE_ADMIN").isEmpty()){
+                roleRepository.save(new Role(null,"ROLE_ADMIN", new HashSet<>()));
+            }
+        }
     }
 }
