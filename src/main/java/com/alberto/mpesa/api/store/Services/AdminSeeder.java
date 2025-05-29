@@ -38,8 +38,7 @@ public class AdminSeeder implements CommandLineRunner {
                     newRole.setName("ROLE_ADMIN");
                     return roleRepository.save(newRole);
                 });
-
-
+        
         if (adminRepository.findByEmail(adminEmail).isEmpty()) {
             Admin admin = new Admin();
             admin.setName("Admin");
