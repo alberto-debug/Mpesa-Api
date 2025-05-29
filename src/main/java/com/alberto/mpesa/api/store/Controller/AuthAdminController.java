@@ -6,7 +6,6 @@ import com.alberto.mpesa.api.store.Repository.AdminRepository;
 import com.alberto.mpesa.api.store.Repository.RoleRepository;
 import com.alberto.mpesa.api.store.domain.model.Admin;
 import com.alberto.mpesa.api.store.infra.Security.TokenService;
-import com.nimbusds.oauth2.sdk.TokenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +36,8 @@ public class AuthAdminController {
         Admin admin = this.adminRepository.findByEmail(body.email())
                 .orElseThrow(()-> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(body.Password(), body.email())){
+        // FIX: Compare password with admin.getPassword(), not email
+        if (!passwordEncoder.matches(body.Password(), admin.getPassword())){
             return ResponseEntity.badRequest().body("Invalid Credentials");
         }
 

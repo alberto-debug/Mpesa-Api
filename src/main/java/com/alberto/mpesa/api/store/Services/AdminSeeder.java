@@ -23,10 +23,10 @@ public class AdminSeeder implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${admEmail}")
+    @Value("${DB_USER}")
     private String adminEmail;
 
-    @Value("${admPassword}")
+    @Value("${DB_PASSWORD}")
     private String adminPassword;
 
     @Override
