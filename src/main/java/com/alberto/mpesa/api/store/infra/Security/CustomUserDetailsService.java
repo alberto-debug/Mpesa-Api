@@ -21,13 +21,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         Admin admin = this.adminRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found for email: " + username));
 
         return new User(
-
                 admin.getEmail(),
                 admin.getPassword(),
                 admin.getRoles().stream()
                         .map(role -> new SimpleGrantedAuthority(role.getName()))
                         .toList()
-
         );
 
     }
