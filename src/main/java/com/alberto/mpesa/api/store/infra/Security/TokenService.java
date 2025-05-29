@@ -18,14 +18,14 @@ public class TokenService {
 
     @Value("${key}")
     private String secret;
-    private String generateToken(Admin admin){
+    public String generateToken(Admin admin){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
 
             String token  = JWT.create()
                     .withIssuer("login-api")
                     .withSubject(admin.getEmail())
-                    .withExpiresAt(this.generateExpirationtoken())
+                    .withExpiresAt(this.generateExpirationToken())
                     .sign(algorithm);
             return token;
 
@@ -34,7 +34,7 @@ public class TokenService {
         }
     }
 
-    private String validateToken(String token){
+    public String validateToken(String token){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
                     return JWT.require(algorithm)
@@ -48,7 +48,7 @@ public class TokenService {
         }
     }
 
-    private Instant generateExpirationtoken(){
+    private Instant generateExpirationToken(){
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-3:00"));
     }
 }
