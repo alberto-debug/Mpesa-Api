@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class apiHome {
 
     @GetMapping("/")
-
     public String home(){
         return "Application currently running at port: 8080";
     }

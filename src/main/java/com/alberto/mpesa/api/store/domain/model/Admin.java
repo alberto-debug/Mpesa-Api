@@ -1,8 +1,25 @@
 package com.alberto.mpesa.api.store.domain.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-
+@Table(name = "users")
+@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@Data
 public class Admin {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    private String email;
+
+    private String password;
+
 }
