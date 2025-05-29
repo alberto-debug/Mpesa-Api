@@ -14,7 +14,6 @@ public class RoleSeeder implements CommandLineRunner {
     @Autowired
     private RoleRepository roleRepository;
 
-
     @Override
     public void run(String... args) throws Exception {
 
