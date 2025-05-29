@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ Permite requisições OPTIONS (CORS)
                         .requestMatchers(HttpMethod.POST, "/user/").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/admin/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/admin/login").permitAll()
                         .requestMatchers("/guest/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/health").permitAll()
