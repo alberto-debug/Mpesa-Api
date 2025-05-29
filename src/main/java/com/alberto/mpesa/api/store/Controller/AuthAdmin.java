@@ -1,6 +1,7 @@
 package com.alberto.mpesa.api.store.Controller;
 
 import com.alberto.mpesa.api.store.DTO.LoginRequestDTO;
+import com.alberto.mpesa.api.store.DTO.ResponseDTO;
 import com.alberto.mpesa.api.store.Repository.AdminRepository;
 import com.alberto.mpesa.api.store.Repository.RoleRepository;
 import com.alberto.mpesa.api.store.domain.model.Admin;
@@ -46,7 +47,12 @@ public class AuthAdmin {
         if (!isAdmin){
             return ResponseEntity.status(403).body("Access denied");
         }
-        return null;
+
+        String token = this.tokenService.generateToken(admin);
+        String adminLogged = "Admin logged";
+        System.out.println(adminLogged + " name: " + admin.getName());
+
+        return ResponseEntity.ok(new ResponseDTO(adminLogged, token));
     }
 
 }
