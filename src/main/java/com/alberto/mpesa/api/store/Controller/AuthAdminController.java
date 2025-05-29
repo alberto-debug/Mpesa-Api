@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth/admin")
-public class AuthAdmin {
+public class AuthAdminController {
 
     @Autowired
     private AdminRepository adminRepository;
