@@ -37,7 +37,7 @@ public class AuthAdminController {
                 .orElseThrow(()-> new RuntimeException("User not found"));
 
         // FIX: Compare password with admin.getPassword(), not email
-        if (!passwordEncoder.matches(body.Password(), admin.getPassword())){
+        if (!passwordEncoder.matches(body.password(), admin.getPassword())){
             return ResponseEntity.badRequest().body("Invalid Credentials");
         }
 
