@@ -25,7 +25,7 @@ public class TokenService {
             String token  = JWT.create()
                     .withIssuer("login-api")
                     .withSubject(admin.getEmail())
-                    .withExpiresAt(this.generateExpirationToken())
+                    .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
             return token;
 
@@ -48,7 +48,7 @@ public class TokenService {
         }
     }
 
-    private Instant generateExpirationToken(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-3:00"));
+    private Instant generateExpirationDate(){
+        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }
