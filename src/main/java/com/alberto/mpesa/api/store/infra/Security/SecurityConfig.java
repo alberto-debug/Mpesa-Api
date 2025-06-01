@@ -31,6 +31,7 @@ public class SecurityConfig {
         this.securityFilter = securityFilter;
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
