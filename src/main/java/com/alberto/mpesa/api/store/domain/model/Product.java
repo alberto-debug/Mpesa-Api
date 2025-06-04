@@ -18,6 +18,8 @@ public class Product {
 
     private String productName;
 
+    private int quantity;
+
     private byte price;
 
 
