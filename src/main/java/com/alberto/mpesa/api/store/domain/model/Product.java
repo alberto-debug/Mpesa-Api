@@ -17,6 +17,8 @@ public class Product {
     private Long id;
 
     private String productName;
-    
+
     private byte price;
+
+
 }
