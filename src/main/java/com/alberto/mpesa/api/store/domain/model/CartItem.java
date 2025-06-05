@@ -7,12 +7,9 @@ import lombok.*;
 @Entity
 @Table(name = "cart_items")
 @AllArgsConstructor
-@Getter
-@Setter
 @NoArgsConstructor
 @Data
 public class CartItem {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +23,7 @@ public class CartItem {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    private int quantity;
 
 }
