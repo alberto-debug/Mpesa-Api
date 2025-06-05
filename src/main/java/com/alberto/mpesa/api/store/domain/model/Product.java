@@ -8,8 +8,6 @@ import java.util.HashSet;
 @Entity
 @Table(name = "products")
 @AllArgsConstructor
-@Getter
-@Setter
 @NoArgsConstructor
 @Data
 public class Product {
@@ -26,6 +24,5 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private HashSet<CartItem> cartItems = new HashSet<>();
-
 
 }
