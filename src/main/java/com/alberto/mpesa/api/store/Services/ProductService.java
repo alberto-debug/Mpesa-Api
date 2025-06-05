@@ -11,9 +11,13 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductService {
 
     @Autowired
@@ -27,7 +31,14 @@ public class ProductService {
         product.setPrice(dto.getPrice());
 
         Product saved = productRepository.save(product);
-        return new ProductResponseDTO(saved.getProductName(), saved.getQuantity(),saved.getPrice());
+        return new ProductResponseDTO(saved.getProductid(),saved.getProductName(),saved.getPrice());
 
+    }
+
+    public List<ProductResponseDTO> findAllProducts(){
+        return productRepository.findAll()
+                .stream()
+                .map(p-> new ProductResponseDTO(p.getProductid(), p.getProductName(), p.getPrice()))
+                .collect(Collectors.toList());
     }
 }
