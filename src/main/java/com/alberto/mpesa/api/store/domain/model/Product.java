@@ -3,6 +3,8 @@ package com.alberto.mpesa.api.store.domain.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+
 @Entity
 @Table(name = "products")
 @AllArgsConstructor
@@ -21,6 +23,9 @@ public class Product {
     private int quantity;
 
     private byte price;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private HashSet<CartItem> cartItems = new HashSet<>();
 
 
 }
