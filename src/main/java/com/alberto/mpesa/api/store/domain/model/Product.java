@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -24,6 +25,6 @@ public class Product {
     private BigDecimal price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private HashSet<CartItem> cartItems = new HashSet<>();
+    private Set<CartItem> cartItems = new HashSet<>();
 
 }
