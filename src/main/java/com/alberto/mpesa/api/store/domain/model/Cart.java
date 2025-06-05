@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "product_cart")
+@Table(name = "carts")
 @AllArgsConstructor
 @Getter
 @Setter
@@ -18,10 +18,6 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Long productId;
-
-    private String listOfCartItems;
 
     @OneToMany
     @JoinTable(
