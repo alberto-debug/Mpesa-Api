@@ -18,8 +18,7 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
-
+    
     @PostMapping("/createProduct")
     public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO dto){
 
@@ -31,5 +30,5 @@ public class ProductController {
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts(){
         return ResponseEntity.ok(productService.findAllProducts());
     }
-    
+
 }
