@@ -31,6 +31,5 @@ public class ProductController {
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts(){
         return ResponseEntity.ok(productService.findAllProducts());
     }
-
-
+    
 }
