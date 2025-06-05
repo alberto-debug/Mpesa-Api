@@ -3,6 +3,7 @@ package com.alberto.mpesa.api.store.domain.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
 @Entity
@@ -20,7 +21,7 @@ public class Product {
 
     private int quantity;
 
-    private byte price;
+    private BigDecimal price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private HashSet<CartItem> cartItems = new HashSet<>();
