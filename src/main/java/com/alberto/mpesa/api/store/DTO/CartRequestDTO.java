@@ -1,5 +1,6 @@
 package com.alberto.mpesa.api.store.DTO;
 
+import com.alberto.mpesa.api.store.domain.model.CartItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,5 @@ import java.util.List;
 @AllArgsConstructor
 public class CartRequestDTO {
 
-    private List<CartItemDetailDTO> list;
+    private List<CartItem> items;
 }
