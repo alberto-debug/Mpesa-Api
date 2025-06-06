@@ -48,7 +48,7 @@ public class CartService {
             return  item;
 
         }).collect(Collectors.toList());
-         
+          
         cart.getCartItems().addAll(cartItems);
         Cart savedCart = cartRepository.save(cart);
         return null;
