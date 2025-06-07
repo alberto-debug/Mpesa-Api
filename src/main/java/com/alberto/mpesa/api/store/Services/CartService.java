@@ -37,7 +37,6 @@ public class CartService {
 
         Cart cart =  new Cart();
 
-
         
         List<CartItem>  cartItems = cartRequestDTO.getItems().stream().map(dto ->{
             Product product = productRepository.findById(dto.getProductId())
