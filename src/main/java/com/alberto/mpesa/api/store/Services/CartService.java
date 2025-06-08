@@ -29,8 +29,7 @@ public class CartService {
 
     @Autowired
     private ProductRepository productRepository;
-
-
+    
     // 📌 Create a new cart with optional items
     @Transactional
     public CartResponseDTO createCart(CartRequestDTO cartRequestDTO){
