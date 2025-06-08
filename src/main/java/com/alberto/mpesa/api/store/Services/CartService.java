@@ -1,9 +1,6 @@
 package com.alberto.mpesa.api.store.Services;
 
-import com.alberto.mpesa.api.store.DTO.CartItemDTO;
-import com.alberto.mpesa.api.store.DTO.CartRequestDTO;
-import com.alberto.mpesa.api.store.DTO.CartResponseDTO;
-import com.alberto.mpesa.api.store.DTO.ResponseDTO;
+import com.alberto.mpesa.api.store.DTO.*;
 import com.alberto.mpesa.api.store.Repository.CartRepository;
 import com.alberto.mpesa.api.store.Repository.ProductRepository;
 import com.alberto.mpesa.api.store.domain.model.Cart;
@@ -16,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,5 +80,23 @@ public class CartService {
     }
 
     // 🔁Convert Cart to CartResponseDTO
-    
+    private CartResponseDTO mapToCArtResponse(Cart cart){
+        List<CartItemDetailDTO> items = cart.getCartItems().stream().map(item -> {
+            Product product = item.getProduct();
+            return new CartItemDetailDTO(
+                    product.getProductid(),
+                    product.getProductName(),
+                    product.getQuantity(),
+                    product.getPrice()
+            );
+        }).collect(Collectors.toList());
+
+        BigDecimal total = items.stream()
+                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new CartResponseDTO(cart.getId(), items, total);
+    }
+
+
 }
