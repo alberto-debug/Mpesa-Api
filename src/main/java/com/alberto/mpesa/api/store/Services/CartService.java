@@ -29,7 +29,7 @@ public class CartService {
 
     @Autowired
     private ProductRepository productRepository;
-    
+
     // 📌 Create a new cart with optional items
     @Transactional
     public CartResponseDTO createCart(CartRequestDTO cartRequestDTO){
@@ -73,4 +73,13 @@ public class CartService {
         Cart updateCart = cartRepository.save(cart);
         return  null;
     }
+
+    // ✅ View cart details
+    public CartResponseDTO viewCartDetails(Long cartId){
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(()-> new IllegalArgumentException("Cart not found with id: " + cartId));
+        return null;
+    }
+
+    
 }
