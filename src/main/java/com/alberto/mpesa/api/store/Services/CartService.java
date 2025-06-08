@@ -59,5 +59,19 @@ public class CartService {
     public CartResponseDTO addItemsToCart(Long cartId, List<CartItemDTO> itemsToAdd){
         Cart cart  = cartRepository.findById(cartId)
                 .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
+
+        for (CartItemDTO dto : itemsToAdd){
+            Product product = productRepository.findById(dto.getProductId())
+                    .orElseThrow(()-> new IllegalArgumentException("Product not found with id:" + dto.getProductId()));
+
+            CartItem item = new CartItem();
+            item.setCart(cart);
+            item.setProduct(product);
+            item.setQuantity(dto.getQuantity());
+            cart.getCartItems().add(item);
+        }
+
+        Cart updateCart = cartRepository.save(cart);
+        return  null;
     }
 }
