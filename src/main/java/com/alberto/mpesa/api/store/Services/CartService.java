@@ -55,6 +55,9 @@ public class CartService {
     }
 
     // ✅ Add items to an existing cart
-
-
+    @Transactional
+    public CartResponseDTO addItemsToCart(Long cartId, List<CartItemDTO> itemsToAdd){
+        Cart cart  = cartRepository.findById(cartId)
+                .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
+    }
 }
