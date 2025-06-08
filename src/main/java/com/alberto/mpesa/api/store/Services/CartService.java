@@ -36,7 +36,7 @@ public class CartService {
     public CartResponseDTO createCart(CartRequestDTO cartRequestDTO){
 
         Cart cart =  new Cart();
-        
+
         List<CartItem>  cartItems = cartRequestDTO.getItems().stream().map(dto ->{
             Product product = productRepository.findById(dto.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + dto.getProductId()));
@@ -54,6 +54,7 @@ public class CartService {
         return null;
     }
 
+    // ✅ Add items to an existing cart
 
 
 }
