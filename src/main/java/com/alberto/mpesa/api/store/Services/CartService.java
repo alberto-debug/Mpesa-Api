@@ -50,7 +50,6 @@ public class CartService {
         Cart savedCart = cartRepository.save(cart);
         return null;
     }
-
     
     // ✅ Add items to an existing cart
     @Transactional
