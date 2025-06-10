@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,11 +29,10 @@ public class CartService {
 
     // 📌 Create a new cart with optional items
     @Transactional
-    public CartResponseDTO createCart(CartRequestDTO cartRequestDTO){
+    public CartResponseDTO createCart(CartRequestDTO cartRequestDTO) {
+        Cart cart = new Cart();
 
-        Cart cart =  new Cart();
-
-        List<CartItem>  cartItems = cartRequestDTO.getItems().stream().map(dto ->{
+        List<CartItem> cartItems = cartRequestDTO.getItems().stream().map(dto -> {
             Product product = productRepository.findById(dto.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + dto.getProductId()));
 
@@ -42,24 +40,24 @@ public class CartService {
             item.setProduct(product);
             item.setQuantity(dto.getQuantity());
             item.setCart(cart);
-            return  item;
-
+            return item;
         }).collect(Collectors.toList());
 
         cart.getCartItems().addAll(cartItems);
         Cart savedCart = cartRepository.save(cart);
-        return null;
+
+        return mapToCartResponse(savedCart);
     }
 
     // ✅ Add items to an existing cart
     @Transactional
-    public CartResponseDTO addItemsToCart(Long cartId, List<CartItemDTO> itemsToAdd){
-        Cart cart  = cartRepository.findById(cartId)
-                .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
+    public CartResponseDTO addItemsToCart(Long cartId, List<CartItemDTO> itemsToAdd) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
 
-        for (CartItemDTO dto : itemsToAdd){
+        for (CartItemDTO dto : itemsToAdd) {
             Product product = productRepository.findById(dto.getProductId())
-                    .orElseThrow(()-> new IllegalArgumentException("Product not found with id:" + dto.getProductId()));
+                    .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + dto.getProductId()));
 
             CartItem item = new CartItem();
             item.setCart(cart);
@@ -68,25 +66,30 @@ public class CartService {
             cart.getCartItems().add(item);
         }
 
-        Cart updateCart = cartRepository.save(cart);
-        return  null;
+        Cart updatedCart = cartRepository.save(cart);
+        return mapToCartResponse(updatedCart);
     }
 
     // ✅ View cart details
-    public CartResponseDTO viewCartDetails(Long cartId){
+    public CartResponseDTO viewCartDetails(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(()-> new IllegalArgumentException("Cart not found with id: " + cartId));
-        return null;
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found with id: " + cartId));
+        return mapToCartResponse(cart);
     }
 
-    // 🔁Convert Cart to CartResponseDTO
-    private CartResponseDTO mapToCArtResponse(Cart cart){
+    // ✅ Expose as getCart() for controller use
+    public CartResponseDTO getCart(Long cartId) {
+        return viewCartDetails(cartId);
+    }
+
+    // 🔁 Convert Cart to CartResponseDTO
+    private CartResponseDTO mapToCartResponse(Cart cart) {
         List<CartItemDetailDTO> items = cart.getCartItems().stream().map(item -> {
             Product product = item.getProduct();
             return new CartItemDetailDTO(
                     product.getProductid(),
                     product.getProductName(),
-                    product.getQuantity(),
+                    item.getQuantity(), // Use item's quantity, not product's stock
                     product.getPrice()
             );
         }).collect(Collectors.toList());
@@ -97,6 +100,4 @@ public class CartService {
 
         return new CartResponseDTO(cart.getId(), items, total);
     }
-
-
 }
