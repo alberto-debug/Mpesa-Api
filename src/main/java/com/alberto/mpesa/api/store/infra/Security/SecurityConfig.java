@@ -43,13 +43,20 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/", "/health").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/admin/login").permitAll()  // Login is public
+                        .requestMatchers(HttpMethod.POST, "/admin/login").permitAll()
                         .requestMatchers("/guest/**").permitAll()
+                        .requestMatchers("/api/carts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll() // ✅ Public product listing
 
-                        // Protected endpoints - but exclude login
+                        // Admin-only product modification
+                        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+
+                        // Other admin routes
                         .requestMatchers("/admin/dashboard/**", "/admin/manage/**").hasRole("ADMIN")
 
-                        // All other requests need authentication
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
@@ -79,7 +86,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000","http://localhost:8080", "https://albertojunior.me"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:8080", "https://albertojunior.me"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
