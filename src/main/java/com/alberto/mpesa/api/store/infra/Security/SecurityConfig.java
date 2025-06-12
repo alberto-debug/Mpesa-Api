@@ -47,6 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/guest/**").permitAll()
                         .requestMatchers("/api/carts/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products").permitAll() // ✅ Public product listing
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+
 
                         // Admin-only product modification
                         .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
