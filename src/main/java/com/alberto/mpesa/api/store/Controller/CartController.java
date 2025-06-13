@@ -25,6 +25,7 @@ public class CartController {
         return ResponseEntity.ok(cartService.createCart(cartRequestDTO));
     }
 
+
     // ✅ Guest: Add items to existing cart
     @PostMapping("/{cartId}/items")
     public ResponseEntity<CartResponseDTO> addItemsToCart(@PathVariable Long cartId, @RequestBody List<CartItemDTO> items) {
