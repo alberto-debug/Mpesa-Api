@@ -13,7 +13,6 @@ public class KeepAliveService {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-
     // Faz uma requisição a cada 4 minutos para evitar inatividade
     @Scheduled(fixedRate = 240000) // 240000 ms = 4 minutos
     public void keepApplicationAlive() {
