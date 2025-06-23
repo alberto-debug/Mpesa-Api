@@ -7,8 +7,6 @@ import com.alberto.mpesa.api.store.domain.model.Cart;
 import com.alberto.mpesa.api.store.domain.model.CartItem;
 import com.alberto.mpesa.api.store.domain.model.Order;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
