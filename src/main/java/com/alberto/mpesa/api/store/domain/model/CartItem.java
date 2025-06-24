@@ -1,6 +1,5 @@
 package com.alberto.mpesa.api.store.domain.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,4 +24,7 @@ public class CartItem {
 
     private int quantity;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order; // Link back to Order
 }

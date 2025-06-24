@@ -9,9 +9,9 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
 @Data
 public class Order {
 
@@ -19,7 +19,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private List<CartItem> items;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true) // One-to-many relationship with CartItem
+    private List<CartItem> items; // Collection of CartItems for this order
 
-    private BigDecimal price;
+    private BigDecimal price; // Total price of the order
 }
