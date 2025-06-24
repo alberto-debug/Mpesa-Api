@@ -115,7 +115,6 @@
 			<systemPath>${project.basedir}/lib/portal-sdk.jar</systemPath>
 		</dependency>
 
-
 		<dependency>
 			<groupId>me.paulschwarz</groupId>
 			<artifactId>spring-dotenv</artifactId>
