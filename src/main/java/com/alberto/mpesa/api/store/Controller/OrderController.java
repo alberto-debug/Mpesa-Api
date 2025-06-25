@@ -8,10 +8,7 @@ import com.fc.sdk.APIResponse;
 import com.fc.sdk.APIMethodType;
 import io.github.cdimascio.dotenv.Dotenv; // Library to load .env variables
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -20,13 +17,13 @@ import lombok.AllArgsConstructor;
 public class OrderController {
 
     private final OrderService orderService;
-    private final Dotenv dotenv = Dotenv.load(); // Initialize Dotenv to load .env file
+    private static final Dotenv dotenv = Dotenv.load(); // Static initialization to avoid reloading
 
     @PostMapping("/checkout")
     public ResponseEntity<Order> checkout(@RequestParam Long cartId) {
         // Process checkout for the given cart ID
         Order order = orderService.checkout(cartId);
-        return ResponseEntity.ok(order);
+        return ResponseEntity.ok(order != null ? order : new Order()); // Return default if null
     }
 
     @PostMapping("/initiate-payment")
@@ -35,9 +32,13 @@ public class OrderController {
             @RequestParam String customerMSISDN,       // Customer's phone number
             @RequestParam String amount,              // Transaction amount
             @RequestParam String thirdPartyReference) { // Unique third-party reference
+        // Validate inputs (basic check)
+        if (transactionReference == null || customerMSISDN == null || amount == null || thirdPartyReference == null) {
+            return ResponseEntity.badRequest().body("Missing required parameters");
+        }
         // Initiate M-Pesa payment with provided parameters
         String paymentResponse = initiateMpesaPayment(transactionReference, customerMSISDN, amount, thirdPartyReference);
-        return ResponseEntity.ok(paymentResponse);
+        return ResponseEntity.ok(paymentResponse != null ? paymentResponse : "Error: No response");
     }
 
     private String initiateMpesaPayment(String transactionReference, String customerMSISDN, String amount, String thirdPartyReference) {
@@ -55,11 +56,19 @@ public class OrderController {
         context.addParameter("input_CustomerMSISDN", customerMSISDN); // Add customer phone
         context.addParameter("input_Amount", amount); // Add amount
         context.addParameter("input_ThirdPartyReference", thirdPartyReference); // Add third-party reference
-        context.addParameter("input_ServiceProviderCode", "171717"); // Add business shortcode
+        context.addParameter("input_ServiceProviderCode", dotenv.get("MpesaServiceProviderCode", "171717")); // Configurable shortcode
 
         // Execute the API request
         APIRequest request = new APIRequest(context);
         APIResponse response = request.execute();
         return response != null ? response.getResult() : "Error: No response"; // Return result or error
+    }
+
+    @PostMapping("/payment-callback")
+    public ResponseEntity<String> paymentCallback(@RequestBody String callbackData) {
+        // Log callback data for testing and debugging
+        System.out.println("Callback received: " + callbackData);
+        // Add logic here to process the callback (e.g., update order status)
+        return ResponseEntity.ok("Callback received");
     }
 }
