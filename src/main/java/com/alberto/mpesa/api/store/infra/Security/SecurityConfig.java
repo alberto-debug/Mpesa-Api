@@ -46,9 +46,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/admin/login").permitAll()
                         .requestMatchers("/guest/**").permitAll()
                         .requestMatchers("/api/carts/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll() // ✅ Public product listing
+                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-
+                        .requestMatchers(HttpMethod.POST, "/api/order/initiate-payment").permitAll() // Allow for testing
 
                         // Admin-only product modification
                         .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
@@ -62,7 +62,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }
@@ -84,11 +83,11 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:8080", "https://albertojunior.me"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8080", "https://albertojunior.me", "developer.mpesa.vm.co.mz")); // Add M-Pesa origin
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
