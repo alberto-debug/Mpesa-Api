@@ -32,13 +32,14 @@ public class OrderController {
             @RequestParam String customerMSISDN,       // Customer's phone number
             @RequestParam String amount,              // Transaction amount
             @RequestParam String thirdPartyReference) { // Unique third-party reference
+
         // Validate inputs (basic check)
         if (transactionReference == null || customerMSISDN == null || amount == null || thirdPartyReference == null) {
             return ResponseEntity.badRequest().body("Missing required parameters");
         }
         // Initiate M-Pesa payment with provided parameters
         String paymentResponse = initiateMpesaPayment(transactionReference, customerMSISDN, amount, thirdPartyReference);
-        
+
         return ResponseEntity.ok(paymentResponse != null ? paymentResponse : "Error: No response");
     }
 
