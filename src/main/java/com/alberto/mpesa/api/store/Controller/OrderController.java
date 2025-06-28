@@ -38,8 +38,7 @@ public class OrderController {
         }
         // Initiate M-Pesa payment with provided parameters
         String paymentResponse = initiateMpesaPayment(transactionReference, customerMSISDN, amount, thirdPartyReference);
-
-
+        
         return ResponseEntity.ok(paymentResponse != null ? paymentResponse : "Error: No response");
     }
 
