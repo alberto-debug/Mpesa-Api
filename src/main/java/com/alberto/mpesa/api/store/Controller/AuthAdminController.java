@@ -54,4 +54,5 @@ public class AuthAdminController {
 
         return ResponseEntity.ok(new ResponseDTO(adminLogged, token));
     }
+
 }
