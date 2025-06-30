@@ -1,6 +1,7 @@
 package com.alberto.mpesa.api.store.Controller;
 
 import com.alberto.mpesa.api.store.DTO.ManagerCreationDTO;
+import com.alberto.mpesa.api.store.DTO.ResponseDTO;
 import com.alberto.mpesa.api.store.Repository.AdminRepository;
 import com.alberto.mpesa.api.store.Repository.RoleRepository;
 import com.alberto.mpesa.api.store.domain.model.Admin;
@@ -34,8 +35,13 @@ public class AdminRole {
         Admin admin = adminRepository.findByEmail(adminEmail)
                 .orElseThrow(()-> new RuntimeException("Admin not found"));
 
-
         boolean isAdmin = admin.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+        if (!isAdmin){
+            return ResponseEntity.status(404).body(new ResponseDTO("Access Denied: only admins can create managers", null));
+        }
+
+
+        return null;
     }
 
 
