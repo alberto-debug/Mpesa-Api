@@ -4,13 +4,21 @@ import com.alberto.mpesa.api.store.DTO.ManagerCreationDTO;
 import com.alberto.mpesa.api.store.DTO.ResponseDTO;
 import com.alberto.mpesa.api.store.Repository.AdminRepository;
 import com.alberto.mpesa.api.store.Repository.RoleRepository;
+import com.alberto.mpesa.api.store.domain.Role.Role;
 import com.alberto.mpesa.api.store.domain.model.Admin;
 import com.alberto.mpesa.api.store.infra.Security.TokenService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+
+@Slf4j
 @RestController
 @RequestMapping("/admin/managers")
 public class AdminRole {
@@ -40,8 +48,23 @@ public class AdminRole {
             return ResponseEntity.status(404).body(new ResponseDTO("Access Denied: only admins can create managers", null));
         }
 
+        if (adminRepository.findByEmail(body.email()).isPresent()){
+            return ResponseEntity.badRequest().body(new ResponseDTO("Email already in use", null));
+        }
 
-        return null;
+        Role managerRole = roleRepository.findByName("MANAGER_ROLE")
+                .orElseThrow(()-> new RuntimeException("ROLE_MANAGER not found"));
+
+        Admin manager = new Admin();
+        manager.setName(body.name());
+        manager.setEmail(body.name());
+        manager.setPassword(passwordEncoder.encode(body.password()));
+        manager.setRoles(new HashSet<>(Collections.singletonList(managerRole)));
+        
+        adminRepository.save(manager);
+        log.info("Manager created with email: {}", body.email());
+
+        return new ResponseEntity.ok(new ResponseDTO("Manager created Successfully", null));
     }
 
 
