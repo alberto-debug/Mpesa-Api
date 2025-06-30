@@ -60,11 +60,11 @@ public class AdminRole {
         manager.setEmail(body.name());
         manager.setPassword(passwordEncoder.encode(body.password()));
         manager.setRoles(new HashSet<>(Collections.singletonList(managerRole)));
-        
+
         adminRepository.save(manager);
         log.info("Manager created with email: {}", body.email());
 
-        return new ResponseEntity.ok(new ResponseDTO("Manager created Successfully", null));
+        return ResponseEntity.ok(new ResponseDTO("Manager created Successfully", null));
     }
 
 
