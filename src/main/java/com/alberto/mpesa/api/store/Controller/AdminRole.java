@@ -67,7 +67,4 @@ public class AdminRole {
         return ResponseEntity.ok(new ResponseDTO("Manager created Successfully", null));
     }
 
-
-
-
 }
