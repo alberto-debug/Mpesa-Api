@@ -39,7 +39,6 @@ public class AdminController {
     public ResponseEntity<?> createManager(@RequestBody ManagerCreationDTO body,
                                            @RequestHeader("Authorization") String token){
 
-
         String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", " "));
         Admin admin = adminRepository.findByEmail(adminEmail)
                 .orElseThrow(()-> new RuntimeException("Admin not found"));
