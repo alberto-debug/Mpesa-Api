@@ -68,4 +68,18 @@ public class AdminRole {
         return ResponseEntity.ok(new ResponseDTO("Manager created Successfully", null));
     }
 
+
+    public ResponseEntity<?> listManager(@RequestHeader("Authorization") String token){
+
+        String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", " "));
+        Admin admin = adminRepository.findByEmail(adminEmail)
+                .orElseThrow(()-> new RuntimeException("Admin not found"));
+
+        boolean isAdmin =  admin.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+        if (!isAdmin){
+            return ResponseEntity.status(403).body(new ResponseDTO("Access denied", null));
+        }
+
+        return null;
+    }
 }
