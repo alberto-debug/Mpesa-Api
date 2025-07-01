@@ -107,4 +107,16 @@ public class AdminRole {
 
         return ResponseEntity.ok(new ResponseDTO("Managers retrieved successfully", managersData));
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteManagers(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", (" ")));
+        Admin admin = adminRepository.findByEmail(adminEmail)
+                .orElseThrow(()-> new RuntimeException("Admin not found with email: " + adminEmail));
+
+
+
+
+        return null;
+    }
 }
