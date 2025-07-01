@@ -95,7 +95,16 @@ public class AdminRole {
             log.info("Not managers found, returning empty array");
             return ResponseEntity.ok(new ResponseDTO("No managers found ", "[]"));
         }
+        String managersData = "[" + managers.stream()
+                .map(m -> {
+                    String managerInfo = m.getId() + ":" + m.getName() + ":" + m.getEmail();
+                    log.info("Manager info: {}", managerInfo);
+                    return managerInfo;
+                })
+                .collect(Collectors.joining("|")) + "]";
 
-        return null;
+        log.info("Returning managers data: {}", managersData);
+
+        return ResponseEntity.ok(new ResponseDTO("Managers retrieved successfully", managersData));
     }
 }
