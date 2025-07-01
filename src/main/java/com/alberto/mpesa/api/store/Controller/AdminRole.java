@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -69,6 +70,7 @@ public class AdminRole {
     }
 
 
+    @GetMapping("/list")
     public ResponseEntity<?> listManager(@RequestHeader("Authorization") String token){
 
         String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", " "));
@@ -77,8 +79,12 @@ public class AdminRole {
 
         boolean isAdmin =  admin.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
         if (!isAdmin){
-            return ResponseEntity.status(403).body(new ResponseDTO("Access denied", null));
+            return ResponseEntity.status(403).body(new ResponseDTO("Access denied: only admins can list managers", null));
         }
+
+        List<Admin> managers = adminRepository.findAll().stream()
+                .filter(admin1 -> admin1.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_MANAGER")))
+                .toList();
 
         return null;
     }
