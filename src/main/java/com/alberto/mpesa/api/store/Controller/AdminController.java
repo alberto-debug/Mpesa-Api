@@ -8,13 +8,11 @@ import com.alberto.mpesa.api.store.domain.Role.Role;
 import com.alberto.mpesa.api.store.domain.model.Admin;
 import com.alberto.mpesa.api.store.infra.Security.TokenService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/admin/managers")
-public class AdminRole {
+public class AdminController {
 
     @Autowired
     private AdminRepository adminRepository;
@@ -110,14 +108,26 @@ public class AdminRole {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteManagers(@PathVariable Long id, @RequestHeader("Authorization") String token){
-        
+
         String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", (" ")));
         Admin admin = adminRepository.findByEmail(adminEmail)
                 .orElseThrow(()-> new RuntimeException("Admin not found with email: " + adminEmail));
 
+        boolean isAdmin = admin.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+        if (!isAdmin){
+            return ResponseEntity.status(403).body(new ResponseDTO("Access denied: only admins can delete managers", null));
+        }
 
+        Admin manager = adminRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Manager not found"));
 
+        if (!manager.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_MANAGER"))){
+            return ResponseEntity.badRequest().body(new ResponseDTO("USer is not manager", null));
+        }
 
-        return null;
+        adminRepository.delete(manager);
+        log.info("Deleted manager with ID: {}", id);
+
+        return ResponseEntity.ok(new ResponseDTO("Manager deleted Successfully", null));
     }
 }
