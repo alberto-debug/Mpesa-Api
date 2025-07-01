@@ -8,6 +8,7 @@ import com.alberto.mpesa.api.store.domain.Role.Role;
 import com.alberto.mpesa.api.store.domain.model.Admin;
 import com.alberto.mpesa.api.store.infra.Security.TokenService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -89,7 +90,11 @@ public class AdminRole {
         log.info("found {} total users: " , adminRepository.findAll().size());
         log.info("Found {} total managers: " , managers.size());
 
-
+        //Data formating
+        if (managers.isEmpty()){
+            log.info("Not managers found, returning empty array");
+            return ResponseEntity.ok(new ResponseDTO("No managers found ", "[]"));
+        }
 
         return null;
     }
