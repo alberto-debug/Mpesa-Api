@@ -85,6 +85,12 @@ public class AdminRole {
                 .filter(admin1 -> admin1.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_MANAGER")))
                 .toList();
 
+        //Debug log
+        log.info("found {} total users: " , adminRepository.findAll().size());
+        log.info("Found {} total managers: " , managers.size());
+
+
+
         return null;
     }
 }
