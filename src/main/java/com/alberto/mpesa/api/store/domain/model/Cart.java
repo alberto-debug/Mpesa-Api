@@ -19,6 +19,8 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    
     private Product product;
 
     @OneToMany(mappedBy = "cart")
