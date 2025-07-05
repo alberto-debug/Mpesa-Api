@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "cart")
+@Table(name = "carts")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +22,7 @@ public class Cart {
 
     
     private Product product;
+
+    @OneToMany(mappedBy = "cart")
+    private Set<CartItem> cartItems = new HashSet<>();
 }
