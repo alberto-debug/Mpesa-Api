@@ -5,22 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
-@Table(name = "carts")
 @Data
-@AllArgsConstructor
+@Table(name = "customer")
 @NoArgsConstructor
-public class Cart {
+@AllArgsConstructor
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Product product;
+    private String name;
 
-    @OneToMany(mappedBy = "cart")
-    private Set<CartItem> cartItems = new HashSet<>();
+    private int PhoneNumber;
 }
