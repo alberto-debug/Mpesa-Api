@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 public class ProductRequest {
 
-    private Long productId;
-    private Long productName;
+
+    private String productName;
     private int quantity;
     private BigDecimal price;
 }
