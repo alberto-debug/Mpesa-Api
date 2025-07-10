@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+//CartItemDTO (for display)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
