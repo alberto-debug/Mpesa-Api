@@ -1,22 +1,25 @@
 package com.alberto.mpesa.api.store.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
-@Data
-@Table(name = "customer")
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "customers", uniqueConstraints = @UniqueConstraint(columnNames = "phone_number"))
+@Getter
+@Setter
+@NoArgsConstructor @AllArgsConstructor
 public class Customer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    private int PhoneNumber;
+    @OneToMany(mappedBy = "customer")
+    private List<Cart> carts;
+
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
 }
