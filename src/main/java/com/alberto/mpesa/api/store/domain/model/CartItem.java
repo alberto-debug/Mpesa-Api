@@ -17,6 +17,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     //Each/many cart item belongs to one cart
     @ManyToOne(optional = false)
     @JoinColumn(name = "cart_id")
