@@ -32,5 +32,4 @@ public class Cart {
     private BigDecimal total;
 
     private LocalDateTime createdAt = LocalDateTime.now();
-
 }
