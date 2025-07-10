@@ -2,7 +2,7 @@ package com.alberto.mpesa.api.store.DTO;
 
 import java.math.BigDecimal;
 
-public class ProductRequest {
+public class ProductRequestDTO {
 
 
     private String productName;
