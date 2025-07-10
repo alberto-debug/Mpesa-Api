@@ -15,6 +15,6 @@ public class ProductService {
 
     public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO productRequestDTO){
 
-
+        return null;
     }
 }
