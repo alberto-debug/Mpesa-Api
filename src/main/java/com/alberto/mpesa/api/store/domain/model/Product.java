@@ -40,7 +40,4 @@ public class Product {
     private LocalDate expiryDate;
 
     private String imageUrl;
-
-    @OneToMany(mappedBy = "product")
-    private Set<CartItem> cartItems = new HashSet<>();
 }

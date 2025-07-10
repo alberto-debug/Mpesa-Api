@@ -1,24 +1,31 @@
 package com.alberto.mpesa.api.store.domain.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "cart_items")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CartItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    //Each/many cart item belongs to one cart
+    @ManyToOne(optional = false)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-   @ManyToOne
-   @JoinColumn(name = "product_id")
+    //Each cart item references a product.
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
-   private int quantity;
-
-
+    private int quantity;
 }
