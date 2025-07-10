@@ -1,18 +1,17 @@
 package com.alberto.mpesa.api.store.DTO;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-//Incoming cart creation/update
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartRequestDTO {
+public class ProductResponse {
 
-    private CustomerDTO customer;
-    private List<CartItemDTO> items;
+    private Long id;
+    private String productName;
+    private BigDecimal price;
 }
