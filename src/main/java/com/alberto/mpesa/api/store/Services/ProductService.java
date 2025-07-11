@@ -24,8 +24,10 @@ public class ProductService {
         Product product = new Product();
         product.setName(dto.getProductName());
         product.setStockQuantity(dto.getQuantity());
+        product.setCategory(dto.getCategory());
+        product.setExpiryDate(dto.getExpiryDate());
+        product.setImageUrl(dto.getImageUrl());
         product.setPrice(dto.getPrice());
-
         return null;
     }
 }
