@@ -28,6 +28,8 @@ public class ProductService {
         product.setExpiryDate(dto.getExpiryDate());
         product.setImageUrl(dto.getImageUrl());
         product.setPrice(dto.getPrice());
-        return null;
+
+        Product saved = productRepository.save(product);
+        return new ProductResponseDTO(saved.getName(), saved.getPrice());
     }
 }
