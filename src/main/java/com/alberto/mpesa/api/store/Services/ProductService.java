@@ -19,7 +19,6 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public ProductResponseDTO createProduct(ProductRequestDTO dto){
-
         Product product = new Product();
         product.setName(dto.getProductName());
         product.setStockQuantity(dto.getQuantity());
@@ -31,4 +30,6 @@ public class ProductService {
         Product saved = productRepository.save(product);
         return new ProductResponseDTO(saved.getName(), saved.getPrice());
     }
+
+
 }
