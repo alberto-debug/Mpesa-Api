@@ -5,6 +5,7 @@ import com.alberto.mpesa.api.store.Repository.AdminRepository;
 import com.alberto.mpesa.api.store.Repository.RoleRepository;
 import com.alberto.mpesa.api.store.domain.Role.Role;
 import com.alberto.mpesa.api.store.domain.model.Admin;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -12,15 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class AdminSeeder implements CommandLineRunner {
 
-    @Autowired
     private AdminRepository adminRepository;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Value("${DB_USER}")
