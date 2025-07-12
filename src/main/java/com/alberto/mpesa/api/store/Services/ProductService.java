@@ -31,13 +31,13 @@ public class ProductService {
         product.setPrice(dto.getPrice());
 
         Product saved = productRepository.save(product);
-        return new ProductResponseDTO(saved.getName(), saved.getPrice());
+        return new ProductResponseDTO(saved.getId(), saved.getName(), saved.getPrice());
     }
 
     public List<ProductResponseDTO> listProducts(){
         return  productRepository.findAll()
                 .stream()
-                .map(product -> new ProductResponseDTO(product.getName(), product.getPrice()))
+                .map(product -> new ProductResponseDTO(product.getId(),product.getName(), product.getPrice()))
                 .collect(Collectors.toList());
     }
 
