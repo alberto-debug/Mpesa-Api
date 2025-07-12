@@ -41,6 +41,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO dto){
         Product product = productRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Product not found"));
@@ -55,6 +56,7 @@ public class ProductService {
         Product updated = productRepository.save(product);
         return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice());
     }
+
 
     public void deleteProduct(Long id){
         if (!productRepository.existsById(id)){
