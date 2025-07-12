@@ -31,5 +31,8 @@ public class ProductService {
         return new ProductResponseDTO(saved.getName(), saved.getPrice());
     }
 
+    public ProductResponseDTO listProducts(){
+        
+    }
 
 }
