@@ -57,7 +57,6 @@ public class ProductService {
         return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice());
     }
 
-
     public void deleteProduct(Long id){
         if (!productRepository.existsById(id)){
             throw new RuntimeException("Product not found with id : " + id);
