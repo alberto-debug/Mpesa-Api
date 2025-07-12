@@ -41,4 +41,19 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO dto){
+        Product product = productRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Product not found"));
+
+        product.setName(dto.getProductName());
+        product.setStockQuantity(dto.getQuantity());
+        product.setCategory(dto.getCategory());
+        product.setExpiryDate(dto.getExpiryDate());
+        product.setImageUrl(dto.getImageUrl());
+        product.setPrice(dto.getPrice());
+        
+        Product updated = productRepository.save(product);
+        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice());
+    }
+
 }
