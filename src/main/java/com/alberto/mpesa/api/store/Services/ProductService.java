@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ProductService {
 
-    @Autowired
     private ProductRepository productRepository;
 
     public ProductResponseDTO createProduct(ProductRequestDTO dto){
