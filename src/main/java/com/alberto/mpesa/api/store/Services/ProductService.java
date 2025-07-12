@@ -56,7 +56,7 @@ public class ProductService {
         Product updated = productRepository.save(product);
         return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice());
     }
-
+    
 
     public void deleteProduct(Long id){
         if (!productRepository.existsById(id)){
