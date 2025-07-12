@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -31,8 +34,10 @@ public class ProductService {
         return new ProductResponseDTO(saved.getName(), saved.getPrice());
     }
 
-    public ProductResponseDTO listProducts(){
-        
+    public List<ProductResponseDTO> listProducts(){
+        return  productRepository.findAll().stream()
+                .map(product -> new ProductResponseDTO(product.getName(), product.getPrice()))
+                .collect(Collectors.toList());
     }
 
 }
