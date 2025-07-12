@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ProductService {
 
-    @Autowired
     private ProductRepository productRepository;
 
     public ProductResponseDTO createProduct(ProductRequestDTO dto){
@@ -32,7 +31,6 @@ public class ProductService {
         Product saved = productRepository.save(product);
         return new ProductResponseDTO(saved.getId(), saved.getName(), saved.getPrice());
     }
-
 
     public List<ProductResponseDTO> listProducts(){
         return  productRepository.findAll()
