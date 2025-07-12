@@ -51,9 +51,14 @@ public class ProductService {
         product.setExpiryDate(dto.getExpiryDate());
         product.setImageUrl(dto.getImageUrl());
         product.setPrice(dto.getPrice());
-        
+
         Product updated = productRepository.save(product);
         return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice());
+    }
+
+    public ProductResponseDTO deleteProduct(Long id){
+        Product product = productRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Product not found"));
     }
 
 }
