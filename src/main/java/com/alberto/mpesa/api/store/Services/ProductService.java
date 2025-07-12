@@ -40,7 +40,6 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO dto){
         Product product = productRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Product not found"));
