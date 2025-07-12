@@ -33,6 +33,7 @@ public class ProductService {
         return new ProductResponseDTO(saved.getId(), saved.getName(), saved.getPrice());
     }
 
+
     public List<ProductResponseDTO> listProducts(){
         return  productRepository.findAll()
                 .stream()
