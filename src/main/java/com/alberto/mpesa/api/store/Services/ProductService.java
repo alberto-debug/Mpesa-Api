@@ -35,7 +35,8 @@ public class ProductService {
     }
 
     public List<ProductResponseDTO> listProducts(){
-        return  productRepository.findAll().stream()
+        return  productRepository.findAll()
+                .stream()
                 .map(product -> new ProductResponseDTO(product.getName(), product.getPrice()))
                 .collect(Collectors.toList());
     }
