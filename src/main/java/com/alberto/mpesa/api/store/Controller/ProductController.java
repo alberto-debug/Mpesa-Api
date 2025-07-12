@@ -3,7 +3,6 @@ package com.alberto.mpesa.api.store.Controller;
 import com.alberto.mpesa.api.store.DTO.ProductRequestDTO;
 import com.alberto.mpesa.api.store.DTO.ProductResponseDTO;
 import com.alberto.mpesa.api.store.Services.ProductService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
