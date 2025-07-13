@@ -23,12 +23,12 @@ public class CartService {
 
     public CartResponseDTO createProduct(CartRequestDTO cartRequest){
 
+
         Cart cart = new Cart();
         cart.setStatus(CartStatus.ACTIVE);
         cart.setCreatedAt(LocalDateTime.now());
         cart.setCartItems(new HashSet<>());
         cart.setTotal(BigDecimal.ZERO);
-
 
         return  null;
 
