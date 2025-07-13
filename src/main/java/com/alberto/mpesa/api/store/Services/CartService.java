@@ -8,13 +8,12 @@ import com.alberto.mpesa.api.store.Repository.ProductRepository;
 import com.alberto.mpesa.api.store.domain.Enums.CartStatus;
 import com.alberto.mpesa.api.store.domain.model.Cart;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+
 
 @Service
 @AllArgsConstructor
@@ -30,7 +29,6 @@ public class CartService {
         cart.setCreatedAt(LocalDateTime.now());
         cart.setCartItems(new HashSet<>());
         cart.setTotal(BigDecimal.ZERO);
-
 
         return  null;
 
