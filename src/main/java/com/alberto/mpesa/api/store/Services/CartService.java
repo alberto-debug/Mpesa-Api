@@ -29,10 +29,9 @@ public class CartService {
         cart.setCreatedAt(LocalDateTime.now());
         cart.setCartItems(new HashSet<>());
         cart.setTotal(BigDecimal.ZERO);
-        
+
         return  null;
-
-
+        
     }
 
 }
