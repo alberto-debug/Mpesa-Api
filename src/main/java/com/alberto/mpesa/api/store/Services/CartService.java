@@ -23,8 +23,7 @@ public class CartService {
     private final ProductRepository productRepository;
 
     public CartResponseDTO createProduct(CartRequestDTO cartRequest){
-
-
+        
         Cart cart = new Cart();
         cart.setStatus(CartStatus.ACTIVE);
         cart.setCreatedAt(LocalDateTime.now());
