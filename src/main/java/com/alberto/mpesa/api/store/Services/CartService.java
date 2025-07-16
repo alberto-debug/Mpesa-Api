@@ -1,11 +1,13 @@
 package com.alberto.mpesa.api.store.Services;
 
+import com.alberto.mpesa.api.store.DTO.CartItemDTO;
 import com.alberto.mpesa.api.store.DTO.CartRequestDTO;
 import com.alberto.mpesa.api.store.DTO.CartResponseDTO;
 import com.alberto.mpesa.api.store.Repository.CartRepository;
 import com.alberto.mpesa.api.store.Repository.ProductRepository;
 import com.alberto.mpesa.api.store.domain.Enums.CartStatus;
 import com.alberto.mpesa.api.store.domain.model.Cart;
+import com.alberto.mpesa.api.store.domain.model.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,14 @@ public class CartService {
         cart.setStatus(CartStatus.ACTIVE);
         cart.setCreatedAt(LocalDateTime.now());
         cart.setCartItems(new HashSet<>());
-        cart.setTotal(BigDecimal.ZERO);
+
+
+        for (CartItemDTO item : cartRequest.getItems()){
+
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(()-> new RuntimeException("Product Not found: " + item.getProductId()));
+        }
+
 
         return  null;
 
