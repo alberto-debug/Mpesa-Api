@@ -1,6 +1,5 @@
 package com.alberto.mpesa.api.store.Services;
 
-
 import com.alberto.mpesa.api.store.DTO.CartRequestDTO;
 import com.alberto.mpesa.api.store.DTO.CartResponseDTO;
 import com.alberto.mpesa.api.store.Repository.CartRepository;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-
 
 @Service
 @AllArgsConstructor
