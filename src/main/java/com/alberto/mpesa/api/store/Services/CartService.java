@@ -52,7 +52,7 @@ public class CartService {
         return mapToResponse(cart);
 
     }
-    
+
     private BigDecimal calculateTotal(Cart cart){
         return cart.getCartItems().stream()
                 .map(i-> i.getProduct().getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
