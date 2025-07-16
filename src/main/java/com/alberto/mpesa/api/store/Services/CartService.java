@@ -34,15 +34,16 @@ public class CartService {
         cart.setCreatedAt(LocalDateTime.now());
         cart.setCartItems(new HashSet<>());
 
-        CartItem cartItem = null;
+
         for (CartItemDTO item : cartRequest.getItems()) {
             Product product = productRepository.findById(item.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product Not found: " + item.getProductId()));
 
-            cartItem = new CartItem();
+            CartItem cartItem= new CartItem();
             cartItem.setProduct(product);
             cartItem.setQuantity(item.getQuantity());
             cartItem.setCart(cart);
+            //Add this cartItem to the cart’s list of items.
             cart.getCartItems().add(cartItem);
 
         }
@@ -59,6 +60,8 @@ public class CartService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    //Converts each CartItem into a CartItemDetailDTO (for the frontend).
+    //Packages all into CartResponseDTO
     private CartResponseDTO mapToResponse(Cart cart){
         List<CartItemDetailDTO> items = cart.getCartItems().stream()
                 .map(item -> new CartItemDetailDTO(
