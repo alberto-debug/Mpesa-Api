@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -23,29 +24,36 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
 
-    public CartResponseDTO createProduct(CartRequestDTO cartRequest){
+    public CartResponseDTO createProduct(CartRequestDTO cartRequest) {
 
         Cart cart = new Cart();
         cart.setStatus(CartStatus.ACTIVE);
         cart.setCreatedAt(LocalDateTime.now());
         cart.setCartItems(new HashSet<>());
 
-        for (CartItemDTO item : cartRequest.getItems()){
+        CartItem cartItem = null;
+        for (CartItemDTO item : cartRequest.getItems()) {
             Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(()-> new RuntimeException("Product Not found: " + item.getProductId()));
-            
-            CartItem cartItem =  new CartItem();
+                    .orElseThrow(() -> new RuntimeException("Product Not found: " + item.getProductId()));
+
+            cartItem = new CartItem();
             cartItem.setProduct(product);
             cartItem.setQuantity(item.getQuantity());
             cartItem.setCart(cart);
             cart.getCartItems().add(cartItem);
 
-
         }
+        cart.setTotal(calculateTotal(cart));
+        cart = cartRepository.save(cart);
 
-
-        return  null;
+        return null;
 
     }
 
+
+    private BigDecimal calculateTotal(Cart cart){
+        return cart.getCartItems().stream()
+                .map(i-> i.getProduct().getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }
