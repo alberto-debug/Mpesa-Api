@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "cart_items")
 @Getter
@@ -16,7 +18,6 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     //Each/many cart item belongs to one cart
     @ManyToOne(optional = false)
@@ -29,4 +30,5 @@ public class CartItem {
     private Product product;
 
     private int quantity;
+
 }
