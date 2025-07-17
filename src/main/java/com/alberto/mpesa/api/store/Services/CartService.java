@@ -57,6 +57,14 @@ public class CartService {
     }
 
     //Remove From Cart
+    public CartResponseDTO removeFromCart(Long cartId, Long productId){
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(()-> new IllegalArgumentException("Cart not found with id: " + cartId));
+
+        cart.getCartItems().removeIf(cartItem -> cartItem.getId().equals(productId));
+        cart = cartRepository.save(cart);
+        return mapToResponse(cart);
+    }
 
 
 
