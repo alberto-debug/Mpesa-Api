@@ -64,6 +64,23 @@ public class CartService {
                 .orElseThrow(()-> new IllegalArgumentException("Cart not found with id: " + cartId));
 
         cart.getCartItems().removeIf(cartItem -> cartItem.getId().equals(productId));
+        cart.setTotal(calculateTotal(cart));
+        cart = cartRepository.save(cart);
+        return mapToResponse(cart);
+    }
+
+    
+    @Transactional
+    public CartResponseDTO updateQuantity(Long cartId, Long productId, int quantity){
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(()-> new IllegalArgumentException("Cart Not found with id: " + cartId));
+
+        cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getId().equals(productId))
+                .findFirst()
+                .ifPresent(cartItem -> cartItem.setQuantity(quantity));
+
+        cart.setTotal(calculateTotal(cart));
         cart = cartRepository.save(cart);
         return mapToResponse(cart);
     }
