@@ -68,7 +68,6 @@ public class CartService {
         cart = cartRepository.save(cart);
         return mapToResponse(cart);
     }
-
     
     @Transactional
     public CartResponseDTO updateQuantity(Long cartId, Long productId, int quantity){
