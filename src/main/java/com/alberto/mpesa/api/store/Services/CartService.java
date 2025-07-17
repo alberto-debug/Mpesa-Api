@@ -27,7 +27,9 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
 
-    public CartResponseDTO createProduct(CartRequestDTO cartRequest) {
+
+    //
+    public CartResponseDTO addToCart(CartRequestDTO cartRequest) {
 
         Cart cart = new Cart();
         cart.setStatus(CartStatus.ACTIVE);
@@ -53,6 +55,11 @@ public class CartService {
         return mapToResponse(cart);
 
     }
+
+    //Remove From Cart
+
+
+
 
     private BigDecimal calculateTotal(Cart cart){
         return cart.getCartItems().stream()
