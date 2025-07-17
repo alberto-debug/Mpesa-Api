@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,7 +68,7 @@ public class CartService {
         return mapToResponse(cart);
     }
 
-    
+
     @Transactional
     public CartResponseDTO updateQuantity(Long cartId, Long productId, int quantity){
         Cart cart = cartRepository.findById(cartId)
@@ -85,6 +84,7 @@ public class CartService {
         return mapToResponse(cart);
     }
 
+    //get and clear Cart
 
     private BigDecimal calculateTotal(Cart cart){
         return cart.getCartItems().stream()
