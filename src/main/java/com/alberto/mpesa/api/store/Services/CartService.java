@@ -10,6 +10,7 @@ import com.alberto.mpesa.api.store.domain.Enums.CartStatus;
 import com.alberto.mpesa.api.store.domain.model.Cart;
 import com.alberto.mpesa.api.store.domain.model.CartItem;
 import com.alberto.mpesa.api.store.domain.model.Product;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +58,7 @@ public class CartService {
     }
 
     //Remove From Cart
+    @Transactional
     public CartResponseDTO removeFromCart(Long cartId, Long productId){
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(()-> new IllegalArgumentException("Cart not found with id: " + cartId));
