@@ -84,7 +84,13 @@ public class CartService {
         return mapToResponse(cart);
     }
 
-    //get and clear Cart methods to add
+    //get
+    public CartResponseDTO getCart(Long id){
+        
+    }
+
+
+    // and clear Cart methods to add
 
     private BigDecimal calculateTotal(Cart cart){
         return cart.getCartItems().stream()
