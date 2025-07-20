@@ -91,9 +91,13 @@ public class CartService {
 
         return mapToResponse(cart);
     }
-    
 
-    // and clear Cart methods to add
+
+    // Clear Cart method
+    public CartResponseDTO clearCart(Long cartId){
+
+    }
+
 
     private BigDecimal calculateTotal(Cart cart){
         return cart.getCartItems().stream()
