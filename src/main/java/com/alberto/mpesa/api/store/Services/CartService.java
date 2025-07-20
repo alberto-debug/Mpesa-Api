@@ -85,8 +85,11 @@ public class CartService {
     }
 
     //get
-    public CartResponseDTO getCart(Long id){
-        
+    public CartResponseDTO getCart(Long cartId){
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
+
+        return mapToResponse(cart);
     }
 
 
