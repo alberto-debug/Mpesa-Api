@@ -95,7 +95,15 @@ public class CartService {
 
     // Clear Cart method
     public CartResponseDTO clearCart(Long cartId){
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
 
+        cart.getCartItems().clear();
+        cart.setTotal(BigDecimal.ZERO);
+        cart.setStatus(CartStatus.CANCELLED);
+        cartRepository.save(cart);
+
+        return mapToResponse(cart);
     }
 
 
