@@ -91,8 +91,7 @@ public class CartService {
 
         return mapToResponse(cart);
     }
-
-
+    
     // Clear Cart method
     public CartResponseDTO clearCart(Long cartId){
         Cart cart = cartRepository.findById(cartId)
@@ -105,7 +104,7 @@ public class CartService {
 
         return mapToResponse(cart);
     }
-    
+
     private BigDecimal calculateTotal(Cart cart){
         return cart.getCartItems().stream()
                 .map(i-> i.getProduct().getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
