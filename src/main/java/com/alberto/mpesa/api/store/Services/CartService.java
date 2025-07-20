@@ -84,15 +84,16 @@ public class CartService {
         return mapToResponse(cart);
     }
 
-    //get
+    //Get Cart
     public CartResponseDTO getCart(Long cartId){
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
 
         return mapToResponse(cart);
     }
-    
+
     // Clear Cart method
+    @Transactional
     public CartResponseDTO clearCart(Long cartId){
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
@@ -103,6 +104,13 @@ public class CartService {
         cartRepository.save(cart);
 
         return mapToResponse(cart);
+    }
+
+    @Transactional
+    public BigDecimal getCartTotal(Long cartId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found: " + cartId));
+        return cart.getTotal();
     }
 
     private BigDecimal calculateTotal(Cart cart){
