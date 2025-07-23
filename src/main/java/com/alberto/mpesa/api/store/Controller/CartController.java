@@ -17,13 +17,13 @@ public class CartController {
     private final CartService cartService;
     private final ProductService productService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<CartResponseDTO> addTOCart(@RequestBody CartRequestDTO cartRequest){
         CartResponseDTO response = cartService.addToCart(cartRequest);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
-    
+
     @DeleteMapping("/{cartId}/items/{productId}")
     public ResponseEntity<CartResponseDTO> removeFromCart(
             @PathVariable Long cartId,
