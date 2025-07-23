@@ -24,7 +24,7 @@ public class CartController {
     }
 
 
-    @DeleteMapping("/{cartId}/items/{productId}")
+    @DeleteMapping("/{cartId}/item/{productId}")
     public ResponseEntity<CartResponseDTO> removeFromCart(
             @PathVariable Long cartId,
             @PathVariable Long productId){
