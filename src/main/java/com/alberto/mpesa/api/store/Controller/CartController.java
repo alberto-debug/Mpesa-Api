@@ -38,6 +38,7 @@ public class CartController {
     private ResponseEntity<CartResponseDTO> addToCart(@RequestBody CartRequestDTO cartRequestDTO){
         CartResponseDTO responseDTO = cartService.addToCart(cartRequestDTO);
 
+        return new ResponseEntity<>(responseDTO,HttpStatus.CREATED);
     }
 
 }
