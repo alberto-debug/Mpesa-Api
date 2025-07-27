@@ -21,56 +21,41 @@ public class CartController {
     private final ProductService productService;
 
     @PostMapping("/add")
-    public ResponseEntity<CartResponseDTO> addTOCart(@RequestBody CartRequestDTO cartRequest){
+    public ResponseEntity<CartResponseDTO> addTOCart(@RequestBody CartRequestDTO cartRequest) {
         CartResponseDTO response = cartService.addToCart(cartRequest);
-        return new ResponseEntity<>(response,HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
-    public ResponseEntity<CartResponseDTO> removeFromCart(
-            @PathVariable Long cartId,
-            @PathVariable Long productId){
-
+    public ResponseEntity<CartResponseDTO> removeFromCart(@PathVariable Long cartId, @PathVariable Long productId) {
         CartResponseDTO response = cartService.removeFromCart(cartId, productId);
-
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
     @PutMapping("/{cartId}/items/{productId}")
     public ResponseEntity<CartResponseDTO> updateCart(
             @PathVariable Long cartId,
             @PathVariable Long productId,
-            @PathVariable int quantity
-    ){
+            @PathVariable int quantity) {
         CartResponseDTO response = cartService.updateQuantity(cartId, productId, quantity);
-        return  new ResponseEntity<>(response,HttpStatus.OK);
-    }
-
-    @GetMapping("/{cartId}")
-    public ResponseEntity<CartResponseDTO> getCart(@PathVariable Long cartId){
-
-        CartResponseDTO response = cartService.getCart(cartId);
-
-        return  new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{cartId}")
-    public ResponseEntity<CartResponseDTO> clearCart(@PathVariable Long cartId){
-
-        CartResponseDTO response = cartService.clearCart(cartId);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{cartId}")
-    public ResponseEntity<BigDecimal> getTotal(@PathVariable Long cartId){
-
-        BigDecimal response = cartService.getCartTotal(cartId);
-
-        return  new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<CartResponseDTO> getCart(@PathVariable Long cartId) {
+        CartResponseDTO response = cartService.getCart(cartId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{cartId}")
+    public ResponseEntity<CartResponseDTO> clearCart(@PathVariable Long cartId) {
+        CartResponseDTO response = cartService.clearCart(cartId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-
+    @GetMapping("/{cartId}/total")
+    public ResponseEntity<BigDecimal> getTotal(@PathVariable Long cartId) {
+        BigDecimal response = cartService.getCartTotal(cartId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
