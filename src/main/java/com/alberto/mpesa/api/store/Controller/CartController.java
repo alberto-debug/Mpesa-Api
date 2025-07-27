@@ -2,7 +2,6 @@ package com.alberto.mpesa.api.store.Controller;
 
 import com.alberto.mpesa.api.store.DTO.CartRequestDTO;
 import com.alberto.mpesa.api.store.DTO.CartResponseDTO;
-import com.alberto.mpesa.api.store.Repository.CartRepository;
 import com.alberto.mpesa.api.store.Services.CartService;
 import com.alberto.mpesa.api.store.Services.ProductService;
 import lombok.AllArgsConstructor;
