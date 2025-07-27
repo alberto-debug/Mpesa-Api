@@ -58,4 +58,5 @@ public class CartController {
         BigDecimal response = cartService.getCartTotal(cartId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 }
