@@ -18,27 +18,31 @@ public class CartController {
     private final CartService cartService;
     private final ProductService productService;
 
-//    @PostMapping("/add")
-//    public ResponseEntity<CartResponseDTO> addTOCart(@RequestBody CartRequestDTO cartRequest){
-//        CartResponseDTO response = cartService.addToCart(cartRequest);
-//        return new ResponseEntity<>(response,HttpStatus.CREATED);
-//    }
+    @PostMapping("/add")
+    public ResponseEntity<CartResponseDTO> addTOCart(@RequestBody CartRequestDTO cartRequest){
+        CartResponseDTO response = cartService.addToCart(cartRequest);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
 
-    @DeleteMapping("/{cartId}/item/{productId}")
+    @DeleteMapping("/{cartId}/items/{productId}")
     public ResponseEntity<CartResponseDTO> removeFromCart(
             @PathVariable Long cartId,
             @PathVariable Long productId){
 
         CartResponseDTO response = cartService.removeFromCart(cartId, productId);
 
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    private ResponseEntity<CartResponseDTO> addToCart(@RequestBody CartRequestDTO cartRequestDTO){
-        CartResponseDTO responseDTO = cartService.addToCart(cartRequestDTO);
-
-        return new ResponseEntity<>(responseDTO,HttpStatus.CREATED);
+    @PutMapping("/{cartId}/items/{productId}")
+    public ResponseEntity<CartResponseDTO> updateCart(
+            @PathVariable Long cartId,
+            @PathVariable Long productId,
+            @PathVariable int quantity
+    ){
+        CartResponseDTO response = cartService.updateQuantity(cartId, productId, quantity);
+        return  new ResponseEntity<>(response,HttpStatus.OK);
     }
+
 
 }
