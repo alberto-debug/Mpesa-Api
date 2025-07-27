@@ -9,10 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -23,7 +20,6 @@ public class ManagerController {
     private final AdminRepository adminRepository;
     private final TokenService tokenService;
     private PasswordEncoder passwordEncoder;
-
 
     @PostMapping("/login")
     public ResponseEntity<?> managerLogin(@RequestBody LoginRequestDTO body){
@@ -47,5 +43,23 @@ public class ManagerController {
         log.info("Manager logged with email: {} " , manager.getEmail());
 
         return null;
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> managerDashboard(@RequestHeader("Authorization") String token) {
+        // Extract email from token
+        String email = tokenService.getEmailFromToken(token.replace("Bearer ", ""));
+        Admin user = adminRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify user has ROLE_MANAGER or ROLE_ADMIN
+        boolean isAuthorized = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("ROLE_MANAGER") || role.getName().equals("ROLE_ADMIN"));
+        if (!isAuthorized) {
+            return ResponseEntity.status(403).body(new ResponseDTO("Access denied: Requires ROLE_MANAGER or ROLE_ADMIN", null));
+        }
+
+        return ResponseEntity.ok(new ResponseDTO("Welcome to Manager Dashboard, " + user.getName(), null));
+        
     }
 }
