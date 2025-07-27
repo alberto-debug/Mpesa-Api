@@ -1,9 +1,11 @@
 package com.alberto.mpesa.api.store.DTO;
 
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
