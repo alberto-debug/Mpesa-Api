@@ -60,6 +60,7 @@ public class ManagerController {
         }
 
         return ResponseEntity.ok(new ResponseDTO("Welcome to Manager Dashboard, " + user.getName(), null));
-        
+
     }
+
 }
