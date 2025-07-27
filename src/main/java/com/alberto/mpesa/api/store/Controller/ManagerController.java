@@ -42,7 +42,7 @@ public class ManagerController {
         String token = tokenService.generateToken(manager);
         log.info("Manager logged with email: {} " , manager.getEmail());
 
-        return null;
+        return ResponseEntity.ok(new ResponseDTO("Manager logged in Successfully", null));
     }
 
     @GetMapping("/dashboard")
