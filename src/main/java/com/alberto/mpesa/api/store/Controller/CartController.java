@@ -44,5 +44,10 @@ public class CartController {
         return  new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @GetMapping("/{cartId}")
+    public ResponseEntity<CartResponseDTO> getCart(@PathVariable Long cartId){
+        CartResponseDTO response = cartService.getCart(cartId);
+        return  new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }
