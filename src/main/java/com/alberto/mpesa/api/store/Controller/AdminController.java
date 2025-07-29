@@ -37,29 +37,30 @@ public class AdminController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createManager(@RequestBody ManagerCreationDTO body,
-                                           @RequestHeader("Authorization") String token){
+                                           @RequestHeader("Authorization") String token) {
+        String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", ""));
+        log.info("Extracted email from token: {}", adminEmail);
 
-        String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", " "));
         Admin admin = adminRepository.findByEmail(adminEmail)
-                .orElseThrow(()-> new RuntimeException("Admin not found"));
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
 
         boolean isAdmin = admin.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
-        if (!isAdmin){
-            return ResponseEntity.status(404).body(new ResponseDTO("Access Denied: only admins can create managers", null));
+        if (!isAdmin) {
+            return ResponseEntity.status(403).body(new ResponseDTO("Access Denied: only admins can create managers", null));
         }
 
-        if (adminRepository.findByEmail(body.email()).isPresent()){
+        if (adminRepository.findByEmail(body.email()).isPresent()) {
             return ResponseEntity.badRequest().body(new ResponseDTO("Email already in use", null));
         }
 
-        Role managerRole = roleRepository.findByName("MANAGER_ROLE")
-                .orElseThrow(()-> new RuntimeException("ROLE_MANAGER not found"));
+        Role staffRole = roleRepository.findByName("ROLE_STAFF")
+                .orElseThrow(() -> new RuntimeException("ROLE_STAFF not found"));
 
         Admin manager = new Admin();
         manager.setName(body.name());
-        manager.setEmail(body.name());
+        manager.setEmail(body.email());
         manager.setPassword(passwordEncoder.encode(body.password()));
-        manager.setRoles(new HashSet<>(Collections.singletonList(managerRole)));
+        manager.setRoles(new HashSet<>(Collections.singletonList(staffRole)));
 
         adminRepository.save(manager);
         log.info("Manager created with email: {}", body.email());
@@ -68,35 +69,35 @@ public class AdminController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> listManager(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> listManager(@RequestHeader("Authorization") String token) {
+        String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", ""));
+        log.info("Extracted email from token: {}", adminEmail);
 
-        String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", " "));
         Admin admin = adminRepository.findByEmail(adminEmail)
-                .orElseThrow(()-> new RuntimeException("Admin not found"));
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
 
-        boolean isAdmin =  admin.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
-        if (!isAdmin){
+        boolean isAdmin = admin.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+        if (!isAdmin) {
             return ResponseEntity.status(403).body(new ResponseDTO("Access denied: only admins can list managers", null));
         }
 
         List<Admin> managers = adminRepository.findAll().stream()
-                .filter(admin1 -> admin1.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_MANAGER")))
+                .filter(admin1 -> admin1.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_STAFF")))
                 .toList();
 
-        //Debug log
-        log.info("found {} total users: " , adminRepository.findAll().size());
-        log.info("Found {} total managers: " , managers.size());
+        log.info("Found {} total users", adminRepository.findAll().size());
+        log.info("Found {} total staff managers", managers.size());
 
-        //Data formating
-        if (managers.isEmpty()){
-            log.info("Not managers found, returning empty array");
-            return ResponseEntity.ok(new ResponseDTO("No managers found ", "[]"));
+        if (managers.isEmpty()) {
+            log.info("No managers found, returning empty array");
+            return ResponseEntity.ok(new ResponseDTO("No managers found", "[]"));
         }
+
         String managersData = "[" + managers.stream()
                 .map(m -> {
-                    String managerInfo = m.getId() + ":" + m.getName() + ":" + m.getEmail();
-                    log.info("Manager info: {}", managerInfo);
-                    return managerInfo;
+                    String info = m.getId() + ":" + m.getName() + ":" + m.getEmail();
+                    log.info("Manager info: {}", info);
+                    return info;
                 })
                 .collect(Collectors.joining("|")) + "]";
 
@@ -106,22 +107,24 @@ public class AdminController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteManagers(@PathVariable Long id, @RequestHeader("Authorization") String token){
+    public ResponseEntity<?> deleteManagers(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", ""));
+        log.info("Extracted email from token: {}", adminEmail);
 
-        String adminEmail = tokenService.getEmailFromToken(token.replace("Bearer ", (" ")));
         Admin admin = adminRepository.findByEmail(adminEmail)
-                .orElseThrow(()-> new RuntimeException("Admin not found with email: " + adminEmail));
+                .orElseThrow(() -> new RuntimeException("Admin not found with email: " + adminEmail));
 
         boolean isAdmin = admin.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
-        if (!isAdmin){
+        if (!isAdmin) {
             return ResponseEntity.status(403).body(new ResponseDTO("Access denied: only admins can delete managers", null));
         }
 
         Admin manager = adminRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("Manager not found"));
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
 
-        if (!manager.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_MANAGER"))){
-            return ResponseEntity.badRequest().body(new ResponseDTO("USer is not manager", null));
+        boolean isStaff = manager.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_STAFF"));
+        if (!isStaff) {
+            return ResponseEntity.badRequest().body(new ResponseDTO("User is not a manager", null));
         }
 
         adminRepository.delete(manager);
@@ -129,6 +132,4 @@ public class AdminController {
 
         return ResponseEntity.ok(new ResponseDTO("Manager deleted Successfully", null));
     }
-
-    //to develop the Search method
 }
