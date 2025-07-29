@@ -28,7 +28,6 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
 
-    // Add product to cart or create a new cart
     @Transactional
     public CartResponseDTO addToCart(CartRequestDTO cartRequest, Long cartId) {
         Cart cart;
@@ -49,7 +48,6 @@ public class CartService {
             Product product = productRepository.findById(item.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found: " + item.getProductId()));
 
-            // Check stock quantity
             if (product.getStockQuantity() < item.getQuantity()) {
                 throw new IllegalArgumentException("Insufficient stock for product: " + product.getName());
             }
@@ -78,7 +76,6 @@ public class CartService {
         return mapToResponse(cart);
     }
 
-    // Remove item from cart
     @Transactional
     public CartResponseDTO removeFromCart(Long cartId, Long productId) {
         Cart cart = cartRepository.findById(cartId)
@@ -90,7 +87,6 @@ public class CartService {
         return mapToResponse(cart);
     }
 
-    // Update item quantity
     @Transactional
     public CartResponseDTO updateQuantity(Long cartId, Long productId, int quantity) {
         Cart cart = cartRepository.findById(cartId)
@@ -120,14 +116,12 @@ public class CartService {
         return mapToResponse(cart);
     }
 
-    // Get cart by ID
     public CartResponseDTO getCart(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
         return mapToResponse(cart);
     }
 
-    // Clear cart
     @Transactional
     public CartResponseDTO clearCart(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
@@ -139,22 +133,18 @@ public class CartService {
         return mapToResponse(cart);
     }
 
-    // Get cart total
-    @Transactional
     public BigDecimal getCartTotal(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new IllegalArgumentException("Cart not found: " + cartId));
         return cart.getTotal();
     }
 
-    // Calculate total
     private BigDecimal calculateTotal(Cart cart) {
         return cart.getCartItems().stream()
                 .map(i -> i.getProduct().getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Map Cart to CartResponseDTO
     private CartResponseDTO mapToResponse(Cart cart) {
         List<CartItemDetailDTO> items = cart.getCartItems().stream()
                 .map(item -> new CartItemDetailDTO(
