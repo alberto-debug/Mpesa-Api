@@ -11,9 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartResponseDTO {
-
-    private Long cartId;
-    private List<CartItemDetailDTO> list;
+    private Long id;
+    private List<CartItemDetailDTO> items;
     private BigDecimal total;
-
 }
