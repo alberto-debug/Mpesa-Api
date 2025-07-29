@@ -19,48 +19,45 @@ public class ManagerController {
 
     private final AdminRepository adminRepository;
     private final TokenService tokenService;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public ResponseEntity<?> managerLogin(@RequestBody LoginRequestDTO body){
+    public ResponseEntity<?> managerLogin(@RequestBody LoginRequestDTO body) {
 
-        Admin manager =  adminRepository.findByEmail(body.email())
-                .orElseThrow(()->new RuntimeException("Manager not found"));
+        Admin manager = adminRepository.findByEmail(body.email())
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
 
-        if (!passwordEncoder.matches(body.password(), manager.getPassword())){
+        if (!passwordEncoder.matches(body.password(), manager.getPassword())) {
             return ResponseEntity.badRequest().body(new ResponseDTO("Invalid Credentials", null));
         }
 
-        boolean isManager = manager.getRoles().stream()
-                .anyMatch(role -> role.getName().equals("ROLE_MANAGER"));
+        boolean isAllowed = manager.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("ROLE_STAFF") || role.getName().equals("ROLE_ADMIN"));
 
-        if (isManager){
+        if (!isAllowed) {
             return ResponseEntity.status(403).body(new ResponseDTO("Access denied", null));
-
         }
 
         String token = tokenService.generateToken(manager);
-        log.info("Manager logged with email: {} " , manager.getEmail());
+        log.info("Manager logged in with email: {}", manager.getEmail());
 
-        return ResponseEntity.ok(new ResponseDTO("Manager logged in Successfully", null));
+        return ResponseEntity.ok(new ResponseDTO("Manager logged in Successfully", token));
     }
 
     @GetMapping("/dashboard")
     public ResponseEntity<?> managerDashboard(@RequestHeader("Authorization") String token) {
-        // Extract email from token
         String email = tokenService.getEmailFromToken(token.replace("Bearer ", ""));
+        log.info("Extracted email from token: {}", email);
+
         Admin user = adminRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Verify user has ROLE_MANAGER or ROLE_ADMIN
         boolean isAuthorized = user.getRoles().stream()
-                .anyMatch(role -> role.getName().equals("ROLE_MANAGER") || role.getName().equals("ROLE_ADMIN"));
+                .anyMatch(role -> role.getName().equals("ROLE_STAFF") || role.getName().equals("ROLE_ADMIN"));
         if (!isAuthorized) {
-            return ResponseEntity.status(403).body(new ResponseDTO("Access denied: Requires ROLE_MANAGER or ROLE_ADMIN", null));
+            return ResponseEntity.status(403).body(new ResponseDTO("Access denied: Requires ROLE_STAFF or ROLE_ADMIN", null));
         }
 
         return ResponseEntity.ok(new ResponseDTO("Welcome to Manager Dashboard, " + user.getName(), null));
-
     }
-
 }
