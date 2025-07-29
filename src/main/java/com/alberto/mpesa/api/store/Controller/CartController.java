@@ -3,13 +3,13 @@ package com.alberto.mpesa.api.store.Controller;
 import com.alberto.mpesa.api.store.DTO.CartRequestDTO;
 import com.alberto.mpesa.api.store.DTO.CartResponseDTO;
 import com.alberto.mpesa.api.store.Services.CartService;
-import com.alberto.mpesa.api.store.Services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/carts")
@@ -17,26 +17,29 @@ import java.math.BigDecimal;
 public class CartController {
 
     private final CartService cartService;
-    private final ProductService productService;
 
     @PostMapping("/add")
-    public ResponseEntity<CartResponseDTO> addTOCart(@RequestBody CartRequestDTO cartRequest) {
-        CartResponseDTO response = cartService.addToCart(cartRequest);
+    public ResponseEntity<CartResponseDTO> addToCart(
+            @RequestBody CartRequestDTO cartRequest,
+            @RequestParam(required = false) Long cartId) {
+        CartResponseDTO response = cartService.addToCart(cartRequest, cartId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
-    public ResponseEntity<CartResponseDTO> removeFromCart(@PathVariable Long cartId, @PathVariable Long productId) {
+    public ResponseEntity<CartResponseDTO> removeFromCart(
+            @PathVariable Long cartId,
+            @PathVariable Long productId) {
         CartResponseDTO response = cartService.removeFromCart(cartId, productId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/{cartId}/items/{productId}")
-    public ResponseEntity<CartResponseDTO> updateCart(
+    @PutMapping("/{cartId}/items/{productId}/quantity")
+    public ResponseEntity<CartResponseDTO> updateQuantity(
             @PathVariable Long cartId,
             @PathVariable Long productId,
-            @PathVariable int quantity) {
-        CartResponseDTO response = cartService.updateQuantity(cartId, productId, quantity);
+            @RequestBody Map<String, Integer> body) {
+        CartResponseDTO response = cartService.updateQuantity(cartId, productId, body.get("quantity"));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -58,4 +61,14 @@ public class CartController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/{cartId}/checkout")
+    public ResponseEntity<?> checkout(
+            @PathVariable Long cartId,
+            @RequestBody Map<String, String> body) {
+        String phoneNumber = body.get("phoneNumber");
+        String paymentMethod = body.get("paymentMethod");
+        // Placeholder for M-Pesa payment initialization
+        return ResponseEntity.ok(Map.of("message", "Payment initiated for " + paymentMethod +
+                (phoneNumber != null ? " to " + phoneNumber : "")));
+    }
 }
