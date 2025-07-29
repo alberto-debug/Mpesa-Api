@@ -1,16 +1,15 @@
 package com.alberto.mpesa.api.store.DTO;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-//CartItemDTO (for display)
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItemDTO {
-
     private Long productId;
     private int quantity;
-
 }
