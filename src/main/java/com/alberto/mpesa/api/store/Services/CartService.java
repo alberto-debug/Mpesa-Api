@@ -18,96 +18,128 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-
 
 @Service
 @AllArgsConstructor
 public class CartService {
 
-
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
 
-
-    //add Product to Cart
-    public CartResponseDTO addToCart(CartRequestDTO cartRequest) {
-
-        Cart cart = new Cart();
-        cart.setStatus(CartStatus.ACTIVE);
-        cart.setCreatedAt(LocalDateTime.now());
-        cart.setCartItems(new HashSet<>());
-
+    // Add product to cart or create a new cart
+    @Transactional
+    public CartResponseDTO addToCart(CartRequestDTO cartRequest, Long cartId) {
+        Cart cart;
+        if (cartId != null) {
+            cart = cartRepository.findById(cartId)
+                    .orElseThrow(() -> new IllegalArgumentException("Cart not found with id: " + cartId));
+            if (cart.getStatus() != CartStatus.ACTIVE) {
+                throw new IllegalStateException("Cannot add to inactive cart");
+            }
+        } else {
+            cart = new Cart();
+            cart.setStatus(CartStatus.ACTIVE);
+            cart.setCreatedAt(LocalDateTime.now());
+            cart.setCartItems(new HashSet<>());
+        }
 
         for (CartItemDTO item : cartRequest.getItems()) {
             Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product Not found: " + item.getProductId()));
+                    .orElseThrow(() -> new RuntimeException("Product not found: " + item.getProductId()));
 
-            CartItem cartItem= new CartItem();
-            cartItem.setProduct(product);
-            cartItem.setQuantity(item.getQuantity());
-            cartItem.setCart(cart);
-            //Add this cartItem to the cart’s list of items.
-            cart.getCartItems().add(cartItem);
+            // Check stock quantity
+            if (product.getStockQuantity() < item.getQuantity()) {
+                throw new IllegalArgumentException("Insufficient stock for product: " + product.getName());
+            }
 
+            Optional<CartItem> existingItem = cart.getCartItems().stream()
+                    .filter(cartItem -> cartItem.getProduct().getId().equals(item.getProductId()))
+                    .findFirst();
+
+            if (existingItem.isPresent()) {
+                int newQuantity = existingItem.get().getQuantity() + item.getQuantity();
+                if (product.getStockQuantity() < newQuantity) {
+                    throw new IllegalArgumentException("Insufficient stock for product: " + product.getName());
+                }
+                existingItem.get().setQuantity(newQuantity);
+            } else {
+                CartItem cartItem = new CartItem();
+                cartItem.setProduct(product);
+                cartItem.setQuantity(item.getQuantity());
+                cartItem.setCart(cart);
+                cart.getCartItems().add(cartItem);
+            }
         }
-        cart.setTotal(calculateTotal(cart));
-        cart = cartRepository.save(cart);
 
-        return mapToResponse(cart);
-
-    }
-
-    //Remove From Cart
-    @Transactional
-    public CartResponseDTO removeFromCart(Long cartId, Long productId){
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(()-> new IllegalArgumentException("Cart not found with id: " + cartId));
-
-        cart.getCartItems().removeIf(cartItem -> cartItem.getId().equals(productId));
         cart.setTotal(calculateTotal(cart));
         cart = cartRepository.save(cart);
         return mapToResponse(cart);
     }
 
+    // Remove item from cart
     @Transactional
-    public CartResponseDTO updateQuantity(Long cartId, Long productId, int quantity){
+    public CartResponseDTO removeFromCart(Long cartId, Long productId) {
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(()-> new IllegalArgumentException("Cart Not found with id: " + cartId));
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found with id: " + cartId));
 
+        cart.getCartItems().removeIf(cartItem -> cartItem.getProduct().getId().equals(productId));
+        cart.setTotal(calculateTotal(cart));
+        cart = cartRepository.save(cart);
+        return mapToResponse(cart);
+    }
+
+    // Update item quantity
+    @Transactional
+    public CartResponseDTO updateQuantity(Long cartId, Long productId, int quantity) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found with id: " + cartId));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
+
+        if (quantity > product.getStockQuantity()) {
+            throw new IllegalArgumentException("Insufficient stock for product: " + product.getName());
+        }
+
+        Cart finalCart = cart;
         cart.getCartItems().stream()
-                .filter(cartItem -> cartItem.getId().equals(productId))
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
                 .findFirst()
-                .ifPresent(cartItem -> cartItem.setQuantity(quantity));
+                .ifPresent(cartItem -> {
+                    if (quantity <= 0) {
+                        finalCart.getCartItems().remove(cartItem);
+                    } else {
+                        cartItem.setQuantity(quantity);
+                    }
+                });
 
         cart.setTotal(calculateTotal(cart));
         cart = cartRepository.save(cart);
         return mapToResponse(cart);
     }
 
-    //Get Cart
-    public CartResponseDTO getCart(Long cartId){
+    // Get cart by ID
+    public CartResponseDTO getCart(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
-
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
         return mapToResponse(cart);
     }
 
-    // Clear Cart method
+    // Clear cart
     @Transactional
-    public CartResponseDTO clearCart(Long cartId){
+    public CartResponseDTO clearCart(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(()-> new IllegalArgumentException("Cart not found"));
-
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
         cart.getCartItems().clear();
         cart.setTotal(BigDecimal.ZERO);
         cart.setStatus(CartStatus.CANCELLED);
         cartRepository.save(cart);
-
         return mapToResponse(cart);
     }
 
+    // Get cart total
     @Transactional
     public BigDecimal getCartTotal(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
@@ -115,15 +147,15 @@ public class CartService {
         return cart.getTotal();
     }
 
-    private BigDecimal calculateTotal(Cart cart){
+    // Calculate total
+    private BigDecimal calculateTotal(Cart cart) {
         return cart.getCartItems().stream()
-                .map(i-> i.getProduct().getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .map(i -> i.getProduct().getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    //Converts each CartItem into a CartItemDetailDTO (for the frontend).
-    //Packages all into CartResponseDTO
-    private CartResponseDTO mapToResponse(Cart cart){
+    // Map Cart to CartResponseDTO
+    private CartResponseDTO mapToResponse(Cart cart) {
         List<CartItemDetailDTO> items = cart.getCartItems().stream()
                 .map(item -> new CartItemDetailDTO(
                         item.getProduct().getId(),
@@ -134,5 +166,4 @@ public class CartService {
                 .collect(Collectors.toList());
         return new CartResponseDTO(cart.getId(), items, cart.getTotal());
     }
-
 }
