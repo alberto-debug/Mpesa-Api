@@ -50,6 +50,7 @@ public class SecurityConfig {
                         // ✅ Product routes restricted to ADMIN and STAFF
                         .requestMatchers("/product/**").hasAnyRole("ADMIN", "STAFF")
                         .requestMatchers("/api/carts/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers("/api/carts/").hasAnyRole("ADMIN", "STAFF")
 
                         // ✅ Admin routes restricted to ADMIN
                         .requestMatchers("/admin/**").hasRole("ADMIN")
