@@ -44,11 +44,20 @@ public class SecurityConfig {
                         .requestMatchers("/", "/health").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/admin/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login/login").permitAll() // ✅ MANAGER LOGIN
                         .requestMatchers(HttpMethod.POST, "/api/order/initiate-payment").permitAll() // Allow for testing
 
-                        // Admin-only product modification
+                        // ✅ Product routes restricted to ADMIN and STAFF
+                        .requestMatchers("/product/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers("/api/carts/**").hasAnyRole("ADMIN", "STAFF")
+
+                        // ✅ Admin routes restricted to ADMIN
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // Other admin routes
+
+                        // ✅ Manager dashboard
+                        .requestMatchers("/login/dashboard").hasAnyRole("ADMIN", "STAFF")
 
                         // Everything else requires authentication
                         .anyRequest().authenticated()
