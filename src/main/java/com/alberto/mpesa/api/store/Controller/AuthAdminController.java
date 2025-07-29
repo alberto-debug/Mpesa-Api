@@ -53,6 +53,7 @@ public class AuthAdminController {
         System.out.println(adminLogged + " name: " + admin.getName());
 
         return ResponseEntity.ok(new ResponseDTO(adminLogged, token));
+
     }
 
 }
